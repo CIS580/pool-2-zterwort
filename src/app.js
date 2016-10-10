@@ -8,6 +8,7 @@ var canvas = document.getElementById('screen');
 var game = new Game(canvas, update, render);
 var image = new Image();
 image.src = 'assets/pool_balls.png';
+var axisList = [];
 
 var pockets = [
   {x: 0, y: 0},
@@ -19,7 +20,7 @@ var pockets = [
 ]
 var stick = {x: 0, y: 0, power: 0, charge: false}
 var balls = []
-for(var i = 0; i < 18; i++){
+for(var i = 0; i < 16; i++){
   balls.push({
     position: {x: 0, y: 0},
     angle: 0,
@@ -27,7 +28,9 @@ for(var i = 0; i < 18; i++){
     color: 'gray',
     pocketed: false
   });
+  axisList.push(balls[i]);
 }
+axisList.sort(function(a,b){return a.x < b.x;});
 rack();
 
 /**
@@ -174,6 +177,26 @@ function update(elapsedTime) {
   });
 
   // check for ball collisions
+  axisList.sort(function(a,b){return b.x - a.x;});
+
+// first pass collision detection
+  var active = [];
+  var potentiallyColliding = [];
+  balls.forEach(function(ball){
+    // remove balls we've passed
+    active = active.filter(function(oball){
+      return oball.position.x - ball.position.x < 30;
+    });
+
+    active.forEach(function(oball){
+      potentiallyColliding.push({a: oball, b: ball});
+      if(Math.pow(pair.a.x - pair.b.x, 2) + Math.pow(pair.a.y - pair.b.y))
+    });
+    active.push(ball);
+  });
+
+  //Second pass = check for REAL collisions
+
   // TODO: Check for ball collisions
   // TODO: Process ball collisions
 }
